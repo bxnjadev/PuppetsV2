@@ -1,16 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.astrocube</groupId>
     <artifactId>Puppets</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+    <repositories>
+
+        <!-- Public AstroCube repositories -->
+        <repository>
+            <id>astro-releases</id>
+            <url>https://repo.astrocube.net/repository/astro-releases</url>
+        </repository>
+        <repository>
+            <id>astro-snapshots</id>
+            <url>https://repo.astrocube.net/repository/astro-snapshots</url>
+        </repository>
+
+        <!-- Public AstroCube repositories -->
+        <repository>
+            <id>core-releases</id>
+            <url>https://repo.astrocube.net/repository/core-releases</url>
+        </repository>
+        <repository>
+            <id>core-snapshots</id>
+            <url>https://repo.astrocube.net/repository/core-releases</url>
+        </repository>
+
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.astrocube</groupId>
+            <artifactId>PaperSpigot</artifactId>
+            <version>1.8-20201112.225727-1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>
