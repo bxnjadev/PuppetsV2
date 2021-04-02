@@ -46,9 +46,13 @@ public class CorePlayerPuppetEntity extends CorePuppetEntity implements PlayerPu
     }
 
     @Override
-    public void register(Player player) {
+    public void show(Player player) {
 
-        super.register(player);
+        if (!isViewing(player)) {
+            throw new UnsupportedOperationException("Player is not registered for viewing");
+        }
+
+        super.show(player);
 
         PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
 
@@ -77,12 +81,28 @@ public class CorePlayerPuppetEntity extends CorePuppetEntity implements PlayerPu
                 playerEntity
         ), 5 * 20L);
 
+        if (hasLinkedHolograms(player)) {
+            showHolograms(player);
+        }
+
     }
 
     @Override
-    public void unregister(Player player) {
+    public void hide(Player player) {
+
+        if (!isViewing(player)) {
+            throw new UnsupportedOperationException("Player is not registered for viewing");
+        }
+
+        super.hide(player);
+
         PlayerConnection connection = ((CraftPlayer)player).getHandle().playerConnection;
         connection.sendPacket(new PacketPlayOutEntityDestroy(getEntity().getId()));
+
+        if (hasLinkedHolograms(player)) {
+            hideHolograms(player);
+        }
+
     }
 
     @Override
@@ -91,12 +111,19 @@ public class CorePlayerPuppetEntity extends CorePuppetEntity implements PlayerPu
     }
 
     @Override
-    public ClickAction getClickAction() {
-        return null;
+    public void unregister(Player player) {
+        hide(player);
+        removeHolograms(player);
+        super.unregister(player);
     }
 
     @Override
     public void setHolograms(Player player, List<String> lines) {
+
+        if (!isViewing(player)) {
+            throw new UnsupportedOperationException("Player not viewing");
+        }
+
         removeHolograms(player);
         Collections.reverse(lines);
         Hologram hologram = new CoreHologram(player, getLocation(), lines);
@@ -115,6 +142,26 @@ public class CorePlayerPuppetEntity extends CorePuppetEntity implements PlayerPu
             Hologram hologram = linkedHolograms.get(player.getDatabaseIdentifier());
             hologram.hide();
             linkedHolograms.remove(player.getDatabaseIdentifier());
+        }
+    }
+
+    @Override
+    public void hideHolograms(Player player) {
+        if (hasLinkedHolograms(player)) {
+            Hologram hologram = linkedHolograms.get(player.getDatabaseIdentifier());
+            if (!hologram.isHidden()) {
+                hologram.hide();
+            }
+        }
+    }
+
+    @Override
+    public void showHolograms(Player player) {
+        if (hasLinkedHolograms(player)) {
+            Hologram hologram = linkedHolograms.get(player.getDatabaseIdentifier());
+            if (hologram.isHidden()) {
+                hologram.show();
+            }
         }
     }
 

@@ -26,4 +26,16 @@ public interface PlayerPuppetEntity extends PuppetEntity {
      */
     void removeHolograms(Player player);
 
+    /**
+     * Hide holograms without removing them.
+     * @param player who will hide the holograms.
+     */
+    void hideHolograms(Player player);
+
+    /**
+     * Show hidden holograms.
+     * @param player to show holograms.
+     */
+    void showHolograms(Player player);
+
 }

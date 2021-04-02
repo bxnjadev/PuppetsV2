@@ -23,6 +23,11 @@ public interface Hologram {
     List<HologramLine> getLines();
 
     /**
+     * @return if hologram is hidden
+     */
+    boolean isHidden();
+
+    /**
      * Show hologram lines for the linked player.
      */
     void show();

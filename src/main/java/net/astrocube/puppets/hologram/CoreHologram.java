@@ -20,12 +20,14 @@ public class CoreHologram implements Hologram {
     private final Location location;
     private final List<String> rawLines;
     private final List<HologramLine> lines;
+    private boolean hidden;
 
     public CoreHologram(Player player, Location location, List<String> lines) {
         this.player = player;
         this.location = location;
         this.rawLines = lines;
         this.lines = new ArrayList<>();
+        this.hidden = true;
     }
 
     @Override
@@ -41,6 +43,11 @@ public class CoreHologram implements Hologram {
     @Override
     public List<HologramLine> getLines() {
         return lines;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return hidden;
     }
 
     @Override
@@ -75,6 +82,8 @@ public class CoreHologram implements Hologram {
 
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntityLiving(stand));
 
+            this.hidden = false;
+
         }
 
     }
@@ -84,6 +93,7 @@ public class CoreHologram implements Hologram {
         PlayerConnection connection = ((CraftPlayer)player).getHandle().playerConnection;
         lines.forEach(line -> connection.sendPacket(new PacketPlayOutEntityDestroy(line.getEntity())));
         lines.clear();
+        this.hidden = true;
     }
 
 
