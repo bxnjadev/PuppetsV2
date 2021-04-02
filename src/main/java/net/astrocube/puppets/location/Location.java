@@ -1,6 +1,4 @@
-package net.astrocube.puppets;
-
-import org.bukkit.World;
+package net.astrocube.puppets.location;
 
 public interface Location {
 
@@ -32,6 +30,6 @@ public interface Location {
     /**
      * @return registered Bukkit world.
      */
-    World getWorld();
+    String getWorld();
 
 }
