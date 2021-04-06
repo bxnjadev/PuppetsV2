@@ -18,6 +18,14 @@ public interface Hologram {
     Location getLocation();
 
     /**
+     *
+     * @param place the place the line of set
+     * @param line the content line
+     */
+    
+    void setLine(int place, String line);
+
+    /**
      * @return ordered list of {@link HologramLine}s shown.
      */
     List<HologramLine> getLines();

@@ -1,10 +1,7 @@
 package net.astrocube.puppets.hologram;
 
 import net.astrocube.puppets.location.Location;
-import net.minecraft.server.v1_8_R3.EntityArmorStand;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving;
-import net.minecraft.server.v1_8_R3.PlayerConnection;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
@@ -38,6 +35,31 @@ public class CoreHologram implements Hologram {
     @Override
     public Location getLocation() {
         return location;
+    }
+
+    @Override
+    public void setLine(int place, String line) {
+
+        place--;
+
+        removeEntity(getLines().get(place));
+        rawLines.set(place, line);
+
+        HologramLine hologramLine = getLines().get(place);
+
+        World world = Bukkit.getWorld(location.getWorld());
+
+        EntityArmorStand stand = new EntityArmorStand(((CraftWorld) world).getHandle());
+        stand.setPosition(getLocation().getX(), hologramLine.getY(), getLocation().getZ());
+
+        getLines().set(place, new CoreHologramLine(line, stand.getId(), hologramLine.getY()));
+
+        stand.setInvisible(true);
+        stand.setCustomName(rawLines.get(place));
+        stand.setCustomNameVisible(!rawLines.get(place).isEmpty());
+
+        sendPacket(new PacketPlayOutSpawnEntityLiving(stand));
+
     }
 
     @Override
@@ -76,11 +98,12 @@ public class CoreHologram implements Hologram {
             lines.add(
                     new CoreHologramLine(
                             rawLines.get(i),
-                            stand.getId()
+                            stand.getId(),
+                            getLocation().getY() + (i * 0.25)
                     )
             );
 
-            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntityLiving(stand));
+            sendPacket(new PacketPlayOutSpawnEntityLiving(stand));
 
             this.hidden = false;
 
@@ -90,12 +113,17 @@ public class CoreHologram implements Hologram {
 
     @Override
     public void hide() {
-        PlayerConnection connection = ((CraftPlayer)player).getHandle().playerConnection;
-        lines.forEach(line -> connection.sendPacket(new PacketPlayOutEntityDestroy(line.getEntity())));
+        lines.forEach(this::removeEntity);
         lines.clear();
         this.hidden = true;
     }
 
+    private void removeEntity(HologramLine hologramLine) {
+        sendPacket(new PacketPlayOutEntityDestroy(hologramLine.getEntity()));
+    }
 
+    private void sendPacket(Packet<?> packet) {
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    }
 
 }

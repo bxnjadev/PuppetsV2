@@ -12,4 +12,10 @@ public interface HologramLine {
      */
     int getEntity();
 
+    /**
+     * @return return the Y hologram
+     */
+
+    double getY();
+
 }
