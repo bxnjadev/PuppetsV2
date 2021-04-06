@@ -10,17 +10,18 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CoreHologram implements Hologram {
 
-    private final Player player;
+    private final UUID uuid;
     private final Location location;
     private final List<String> rawLines;
     private final List<HologramLine> lines;
     private boolean hidden;
 
     public CoreHologram(Player player, Location location, List<String> lines) {
-        this.player = player;
+        this.uuid = player.getUniqueId();
         this.location = location;
         this.rawLines = lines;
         this.lines = new ArrayList<>();
@@ -29,7 +30,7 @@ public class CoreHologram implements Hologram {
 
     @Override
     public Player getLinked() {
-        return player;
+        return Bukkit.getPlayer(uuid);
     }
 
     @Override
@@ -123,7 +124,7 @@ public class CoreHologram implements Hologram {
     }
 
     private void sendPacket(Packet<?> packet) {
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+        ((CraftPlayer) getLinked()).getHandle().playerConnection.sendPacket(packet);
     }
 
 }
