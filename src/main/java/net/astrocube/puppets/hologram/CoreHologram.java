@@ -69,6 +69,11 @@ public class CoreHologram implements Hologram {
     }
 
     @Override
+    public List<String> getRawLines() {
+        return rawLines;
+    }
+
+    @Override
     public boolean isHidden() {
         return hidden;
     }

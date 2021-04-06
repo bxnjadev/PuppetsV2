@@ -31,6 +31,11 @@ public interface Hologram {
     List<HologramLine> getLines();
 
     /**
+     * @return the raw lines
+     */
+    List<String> getRawLines();
+
+    /**
      * @return if hologram is hidden
      */
     boolean isHidden();
