@@ -18,7 +18,7 @@ import java.util.*;
 public class CorePlayerPuppetEntity extends CorePuppetEntity implements PlayerPuppetEntity {
 
     private final PuppetSkin skin;
-    private final Map<String, Hologram> linkedHolograms;
+    private final Map<UUID, Hologram> linkedHolograms;
 
     CorePlayerPuppetEntity(
             Plugin plugin,
@@ -127,28 +127,28 @@ public class CorePlayerPuppetEntity extends CorePuppetEntity implements PlayerPu
         removeHolograms(player);
         Collections.reverse(lines);
         Hologram hologram = new CoreHologram(player, getLocation(), lines);
-        linkedHolograms.put(player.getDatabaseIdentifier(), hologram);
+        linkedHolograms.put(player.getUniqueId(), hologram);
         hologram.show();
     }
 
     @Override
     public boolean hasLinkedHolograms(Player player) {
-        return linkedHolograms.containsKey(player.getDatabaseIdentifier());
+        return linkedHolograms.containsKey(player.getUniqueId());
     }
 
     @Override
     public void removeHolograms(Player player) {
         if (hasLinkedHolograms(player)) {
-            Hologram hologram = linkedHolograms.get(player.getDatabaseIdentifier());
+            Hologram hologram = linkedHolograms.get(player.getUniqueId());
             hologram.hide();
-            linkedHolograms.remove(player.getDatabaseIdentifier());
+            linkedHolograms.remove(player.getUniqueId());
         }
     }
 
     @Override
     public void hideHolograms(Player player) {
         if (hasLinkedHolograms(player)) {
-            Hologram hologram = linkedHolograms.get(player.getDatabaseIdentifier());
+            Hologram hologram = linkedHolograms.get(player.getUniqueId());
             if (!hologram.isHidden()) {
                 hologram.hide();
             }
@@ -158,7 +158,7 @@ public class CorePlayerPuppetEntity extends CorePuppetEntity implements PlayerPu
     @Override
     public void showHolograms(Player player) {
         if (hasLinkedHolograms(player)) {
-            Hologram hologram = linkedHolograms.get(player.getDatabaseIdentifier());
+            Hologram hologram = linkedHolograms.get(player.getUniqueId());
             if (hologram.isHidden()) {
                 hologram.show();
             }

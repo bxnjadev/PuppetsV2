@@ -17,9 +17,10 @@ public abstract class CorePuppetEntity implements PuppetEntity {
     private final Location location;
     private final int followingEntity;
     private final ClickAction action;
-    private final Set<String> viewers;
-    private final Set<String> autoHidden;
-    private final Set<String> rendered;
+    private final Set<UUID> viewers;
+    private final Set<UUID> autoHidden;
+    private final Set<UUID> rendered;
+    private boolean visibleAll;
     private final Entity entity;
     private final UUID UUID;
 
@@ -39,22 +40,23 @@ public abstract class CorePuppetEntity implements PuppetEntity {
         this.autoHidden = new HashSet<>();
         this.viewers = new HashSet<>();
         this.rendered = new HashSet<>();
+        this.visibleAll = false;
         this.UUID = UUID;
     }
 
     @Override
     public boolean isRendered(Player player) {
-        return rendered.contains(player.getDatabaseIdentifier());
+        return rendered.contains(player.getUniqueId());
     }
 
     @Override
     public void show(Player player) {
-        this.rendered.add(player.getDatabaseIdentifier());
+        this.rendered.add(player.getUniqueId());
     }
 
     @Override
     public void hide(Player player) {
-        this.rendered.remove(player.getDatabaseIdentifier());
+        this.rendered.remove(player.getUniqueId());
     }
 
     @Override
@@ -69,12 +71,12 @@ public abstract class CorePuppetEntity implements PuppetEntity {
 
     @Override
     public boolean isViewing(Player player) {
-        return viewers.contains(player.getDatabaseIdentifier());
+        return viewers.contains(player.getUniqueId());
     }
 
     @Override
     public void register(Player player) {
-        viewers.add(player.getDatabaseIdentifier());
+        viewers.add(player.getUniqueId());
     }
 
     @Override
@@ -111,17 +113,29 @@ public abstract class CorePuppetEntity implements PuppetEntity {
 
     @Override
     public void unregister(Player player) {
-        viewers.remove(player.getDatabaseIdentifier());
+        viewers.remove(player.getUniqueId());
     }
 
     @Override
-    public Set<String> getViewers() {
+    public Set<UUID> getViewers() {
         return viewers;
     }
 
     @Override
     public Entity getEntity() {
         return this.entity;
+    }
+
+    @Override
+    public void showAll() {
+        visibleAll = true;
+        Bukkit.getOnlinePlayers().forEach(this::show);
+    }
+
+    @Override
+    public void hideAll() {
+        visibleAll = false;
+        Bukkit.getOnlinePlayers().forEach(this::hide);
     }
 
     @Override
@@ -141,19 +155,18 @@ public abstract class CorePuppetEntity implements PuppetEntity {
 
     @Override
     public void autoHide(Player player) {
-        autoHidden.add(player.getDatabaseIdentifier());
+        autoHidden.add(player.getUniqueId());
     }
 
     @Override
     public boolean isAutoHidden(Player player) {
-        return autoHidden.contains(player.getDatabaseIdentifier());
+        return autoHidden.contains(player.getUniqueId());
     }
 
     @Override
     public void removeAutoHide(Player player) {
-        autoHidden.remove(player.getDatabaseIdentifier());
+        autoHidden.remove(player.getUniqueId());
     }
-
 
     public static double square(double val) {
         return val * val;

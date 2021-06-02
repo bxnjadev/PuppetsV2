@@ -33,7 +33,7 @@ public class ChunkPuppetListener implements Listener {
 
             entity.getViewers().forEach(viewer -> {
 
-                Player player = Bukkit.getPlayerByIdentifier(viewer);
+                Player player = Bukkit.getPlayer(viewer);
 
                 if (player != null) {
                     entity.autoHide(player);
@@ -60,7 +60,7 @@ public class ChunkPuppetListener implements Listener {
 
             entity.getViewers().forEach(viewer -> {
 
-                Player player = Bukkit.getPlayerByIdentifier(viewer);
+                Player player = Bukkit.getPlayer(viewer);
 
                 if (player != null && entity.isInRange(player) && entity.isAutoHidden(player)) {
 

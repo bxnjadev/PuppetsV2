@@ -2,13 +2,13 @@ package net.astrocube.puppets.packet;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
 import net.astrocube.puppets.Reflection;
 import net.astrocube.puppets.entity.ClickAction;
 import net.astrocube.puppets.entity.PuppetEntity;
 import net.astrocube.puppets.entity.PuppetRegistry;
 import net.minecraft.server.v1_8_R3.PacketPlayInUseEntity;
-import net.seocraft.lib.netty.channel.ChannelDuplexHandler;
-import net.seocraft.lib.netty.channel.ChannelHandlerContext;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ public class PuppetClickPacket implements PacketHandler {
 
     private final PuppetRegistry registry;
     private final Plugin plugin;
-    private final Multimap<UUID, String> cooldown;
+    private final Multimap<UUID, UUID> cooldown;
     private final Reflection.FieldAccessor<Integer> entityIdField =
             Reflection.getField(PacketPlayInUseEntity.class, "a", int.class);
     private final Reflection.FieldAccessor<?> actionField =
@@ -51,7 +51,7 @@ public class PuppetClickPacket implements PacketHandler {
 
                             for (PuppetEntity puppet : registry.getRegistry()) {
 
-                                if (cooldown.containsEntry(puppet.getUUID(), player.getDatabaseIdentifier())) {
+                                if (cooldown.containsEntry(puppet.getUUID(), player.getUniqueId())) {
                                     return;
                                 }
 
@@ -64,11 +64,11 @@ public class PuppetClickPacket implements PacketHandler {
 
                                         puppet.getClickAction().getAction().accept(player);
 
-                                        cooldown.put(puppet.getUUID(), player.getDatabaseIdentifier());
+                                        cooldown.put(puppet.getUUID(), player.getUniqueId());
 
                                         Bukkit.getScheduler().runTaskLater(
                                                 plugin,
-                                                () -> cooldown.remove(puppet.getUUID(), player.getDatabaseIdentifier()),
+                                                () -> cooldown.remove(puppet.getUUID(), player.getUniqueId()),
                                                 5L
                                         );
 

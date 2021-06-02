@@ -51,6 +51,18 @@ public interface PuppetEntity {
     void show(Player player);
 
     /**
+     * All players show the npc
+     */
+
+    void showAll();
+
+    /**
+     * All players hide the npc
+     */
+
+    void hideAll();
+
+    /**
      * @param player to check
      * @return if user is actually displaying.
      */
@@ -67,7 +79,7 @@ public interface PuppetEntity {
     /**
      * @return all puppet viewers.
      */
-    Set<String> getViewers();
+    Set<UUID> getViewers();
 
     /**
      * Add player to auto hide list if an entity was forced
